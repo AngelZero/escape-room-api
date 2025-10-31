@@ -1,0 +1,294 @@
+{
+  "info": {
+    "_postman_id": "24948345-36a3-462a-8579-1894b4764fe8",
+    "name": "Haunted Escape Room API (Spring Boot)",
+    "description": "Collection to play through the API escape-room flow and see error handling.\nHeaders: always send X-Player-Id.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1) Room \u2014 first clue (GET /room)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-Player-Id",
+            "value": "{{playerId}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/room",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "room"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('status is 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('has message & next', function () {",
+              "   const json = pm.response.json();",
+              "   pm.expect(json).to.have.property('message');",
+              "   pm.expect(json).to.have.property('next');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2) Door \u2014 unlock with key (POST /door?key={{doorKey}})",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Player-Id",
+            "value": "{{playerId}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/door?key={{doorKey}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "door"
+          ],
+          "query": [
+            {
+              "key": "key",
+              "value": "{{doorKey}}"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('status is 200 (unlocked)', function () { pm.response.to.have.status(200); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3) Hallway \u2014 see clue (GET /hallway)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-Player-Id",
+            "value": "{{playerId}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/hallway",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "hallway"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('status is 200', function () { pm.response.to.have.status(200); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4) Hallway \u2014 solve riddle (GET /hallway?answer={{hallwayAnswer}})",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-Player-Id",
+            "value": "{{playerId}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/hallway?answer={{hallwayAnswer}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "hallway"
+          ],
+          "query": [
+            {
+              "key": "answer",
+              "value": "{{hallwayAnswer}}"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('status is 200 (token granted)', function () { pm.response.to.have.status(200); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5) Escape \u2014 finish (POST /escape)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Player-Id",
+            "value": "{{playerId}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/escape",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "escape"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('status is 200 (escaped)', function () { pm.response.to.have.status(200); });",
+              "pm.test('has status=escaped', function () {",
+              "   const json = pm.response.json();",
+              "   pm.expect(json.status).to.eql('escaped');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "\u2731 Bonus: 404 example (GET /no-existe)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-Player-Id",
+            "value": "{{playerId}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/no-existe",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "no-existe"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('status is 404', function () { pm.response.to.have.status(404); });",
+              "pm.test('error payload has fields', function () {",
+              "   const json = pm.response.json();",
+              "   pm.expect(json).to.have.property('status');",
+              "   pm.expect(json).to.have.property('error');",
+              "   pm.expect(json).to.have.property('path');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Alt) Door \u2014 JSON body (POST /door)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Player-Id",
+            "value": "{{playerId}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/door",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "door"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"key\": \"{{doorKey}}\"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('status is 200 (unlocked)', function () { pm.response.to.have.status(200); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "playerId",
+      "value": "demo1"
+    },
+    {
+      "key": "doorKey",
+      "value": "candle"
+    },
+    {
+      "key": "hallwayAnswer",
+      "value": "mirror"
+    }
+  ]
+}
