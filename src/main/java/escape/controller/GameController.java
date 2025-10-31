@@ -23,8 +23,8 @@ public class GameController {
     @GetMapping("/room")
     public ClueResponse room(@RequestHeader("X-Player-Id") @NotBlank String playerId) {
         return new ClueResponse(
-                "El Nido. Un 'eco' parpadea con una pista encriptada ZWxhdnJvYg==.",
-                "Decodifica → POST /door con la clave (query o JSON).",
+                "The Nest. An echo flickers with an encoded hint: ZWxhdnJvYg==.",
+                "Decode, then POST /door with the key (query or JSON).",
                 "/door"
         );
     }
@@ -43,18 +43,18 @@ public class GameController {
         var p = service.progressFor(playerId);
         if (service.tryDoor(key)) {
             p.setDoorUnlocked(true);
-            p.getKeys().add("borlave"); // ← entrega Key 1
+            p.getKeys().add("borvale"); // ← award Key 1
             return ResponseEntity.ok(new ClueResponse(
-                    "Fragmento 1 aceptado. El 'eco' susurra: 'Accede al pasillo donde perdí mi conexión...'",
-                    "Ve a GET /hallway para la siguiente pista.",
+                    "Fragment 1 accepted. The echo whispers: 'Enter the hallway where I lost my connection...'",
+                    "Go to GET /hallway for the next hint.",
                     "/hallway"
             ));
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(Map.of("error","Clave incorrecta. El 'eco' se ríe."));
+                .body(Map.of("error","Wrong key. The echo laughs."));
     }
 
-    // 3) GET /hallway (protegido por doorUnlocked)
+    // 3) GET /hallway (protected by doorUnlocked)
     @GetMapping("/hallway")
     public ResponseEntity<?> hallway(@RequestHeader("X-Player-Id") @NotBlank String playerId,
                                      @RequestParam(value = "answer", required = false) String answer) {
@@ -67,37 +67,36 @@ public class GameController {
         if (answer == null) {
             return ResponseEntity.ok(new ClueResponse(
                     service.hallwayClue(),
-                    "Resuelve con GET /hallway?answer=31337",
+                    "Solve with GET /hallway?answer=<number>",
                     "/escape"
             ));
         }
 
         if (service.collectHallwayKey(answer)) {
-            p.getKeys().add("31337"); // ← entrega Key 2
+            p.getKeys().add("31337"); // ← award Key 2
             return ResponseEntity.ok(new ClueResponse(
-                    "Clave 2 aceptada. La llave maestra está casi lista.",
-                    "Termina con POST /escape (sin body).",
+                    "Key 2 accepted. The master key is almost ready.",
+                    "Finish with POST /escape (no body).",
                     "/escape"
             ));
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(Map.of("error","Respuesta incorrecta."));
+                .body(Map.of("error","Wrong answer."));
     }
 
-
-    // 4) POST /escape → verificar llaves y “ganar”
+    // 4) POST /escape → verify keys and “win”
     @PostMapping("/escape")
     public ResponseEntity<?> escape(@RequestHeader("X-Player-Id") @NotBlank String playerId) {
         PlayerProgress p = service.progressFor(playerId);
         if (p.hasAllKeys()) {
             return ResponseEntity.ok(Map.of(
                     "status","escaped",
-                    "message","Llave maestra reconstruida. El virus 'vudú' ha sido purgado. ¡Eres libre!"
+                    "message","Master key rebuilt. The 'voodoo' virus has been purged. You are free!"
             ));
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
                 "status","stuck",
-                "missing","Needs keys",
+                "missing","Need keys",
                 "hint","Visit /room → /door → /hallway"
         ));
     }

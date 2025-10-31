@@ -15,19 +15,18 @@ public class GameService {
         return store.computeIfAbsent(playerId, id -> new PlayerProgress());
     }
 
-    // --- Storyline "El Nido" (solo cambia el contenido, no la estructura) ---
     public String firstClue() {
-        return "Un 'eco' parpadea... 'El primer fragmento está encriptado en Base64: ZWxhdnJvYg=='";
+        return "An 'echo' flickers... 'The first fragment is encoded in Base64: ZWxhdnJvYg=='.";
     }
 
-    // Key 1: "borlave"
+    // Key 1: "borvale"
     public boolean tryDoor(String key) {
-        return key != null && "borlave".equalsIgnoreCase(key.trim());
+        return key != null && "borvale".equalsIgnoreCase(key.trim());
     }
 
     public String hallwayClue() {
-        return "El 'eco' dice: 'La clave final es el número de puerto que siempre usaba para mis ataques... "
-                + "el que abre todas las puertas traseras.' (Pista: es 'Elite' en leetspeak).";
+        return "The echo says: 'The final key is the port number I always used for my attacks..."
+                + " the one that opens all backdoors.' (Hint: it's 'Elite' in leetspeak).";
     }
 
     // Key 2: "31337"

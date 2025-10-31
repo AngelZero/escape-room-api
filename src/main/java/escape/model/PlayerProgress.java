@@ -11,5 +11,5 @@ public class PlayerProgress {
     public void setDoorUnlocked(boolean val) { this.doorUnlocked = val; }
 
     public Set<String> getKeys() { return keys; }
-    public boolean hasAllKeys() { return keys.contains("borlave") && keys.contains("31337"); }
+    public boolean hasAllKeys() { return keys.contains("borvale") && keys.contains("31337"); }
 }
